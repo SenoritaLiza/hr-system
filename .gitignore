@@ -1,0 +1,31 @@
+# Данные
+data.csv
+*.csv
+
+# Сохранённые модели (генерируются через train_models.py)
+models/
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+.env
+.venv
+venv/
+
+# Jupyter
+.ipynb_checkpoints/
+*.ipynb_checkpoints
+
+# macOS
+.DS_Store
+
+# Streamlit
+.streamlit/
+
+# Логи
+*.log
+nohup.out
+
+# Интерфейс (добавляется отдельно)
+app.py
