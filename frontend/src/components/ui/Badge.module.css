@@ -1,0 +1,63 @@
+.badge{
+  display: inline-flex;
+  align-items: center;
+  gap: .35rem;
+  font-size: .76rem;
+  font-weight: 600;
+  padding: .22rem .6rem;
+  border-radius: 99px;
+  white-space: nowrap
+}
+
+.badge svg{
+  width: 13px;
+  height: 13px
+}
+
+.badge-good{
+  background: var(--good-soft);
+  color: var(--good-ink)
+}
+
+.badge-warning{
+  background: var(--warning-soft);
+  color: var(--warning-ink)
+}
+
+.badge-serious{
+  background: var(--serious-soft);
+  color: var(--serious-ink)
+}
+
+.badge-critical{
+  background: var(--critical-soft);
+  color: var(--critical-ink)
+}
+
+.badge-neutral{
+  background: var(--surface-2);
+  color: var(--ink-muted)
+}
+
+.badge-admin-role{
+  background: var(--ink);
+  color: var(--bg)
+}
+
+@media (prefers-color-scheme:dark){
+  .badge-admin-role{
+    background: var(--accent);
+    color: var(--accent-ink)
+  }
+}
+
+:root[data-theme="dark"] .badge-admin-role{
+  background: var(--accent);
+  color: var(--accent-ink)
+}
+
+.badge-invited{
+  background: none;
+  color: var(--ink-muted);
+  border: 1px dashed var(--border)
+}

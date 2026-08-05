@@ -1,0 +1,31 @@
+.toast{
+  position: fixed;
+  bottom: 1.25rem;
+  right: 1.25rem;
+  background: var(--ink);
+  color: var(--bg);
+  padding: .75rem 1.1rem;
+  border-radius: var(--radius-ctrl);
+  font-size: .85rem;
+  font-weight: 600;
+  box-shadow: var(--shadow-md);
+  display: flex;
+  align-items: center;
+  gap: .55rem;
+  z-index: 100;
+  transform: translateY(12px);
+  opacity: 0;
+  pointer-events: none;
+  transition: transform .25s ease, opacity .25s ease
+}
+
+.toast.show{
+  transform: translateY(0);
+  opacity: 1
+}
+
+.toast svg{
+  width: 16px;
+  height: 16px;
+  color: var(--good)
+}

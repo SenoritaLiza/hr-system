@@ -1,0 +1,41 @@
+import { Navigate, Route, Routes } from "react-router-dom";
+import { IconSprite } from "@/components/icons/IconSprite";
+import { AppShell } from "@/components/layout/AppShell";
+import { ThemeProvider } from "@/context/ThemeContext";
+import { RoleProvider } from "@/context/RoleContext";
+import { ThresholdProvider } from "@/context/ThresholdContext";
+import { CandidatesProvider } from "@/context/CandidatesContext";
+import { PageTitleProvider } from "@/context/PageTitleContext";
+import { ToastProvider } from "@/context/ToastContext";
+import { PATHS } from "@/router/paths";
+
+import { VacanciesPage } from "@/pages/vacancies/VacanciesPage";
+import { VacancyPipelinePage } from "@/pages/vacancies/VacancyPipelinePage";
+
+function App() {
+  return (
+    <ThemeProvider>
+      <RoleProvider>
+        <ThresholdProvider>
+          <CandidatesProvider>
+            <PageTitleProvider>
+              <ToastProvider>
+                <IconSprite />
+                <Routes>
+                  <Route element={<AppShell />}>
+                    <Route path="/" element={<Navigate to={PATHS.vacancies} replace />} />
+                    <Route path={PATHS.vacancies} element={<VacanciesPage />} />
+                    <Route path={PATHS.vacancyPipeline} element={<VacancyPipelinePage />} />
+                    <Route path="*" element={<Navigate to={PATHS.vacancies} replace />} />
+                  </Route>
+                </Routes>
+              </ToastProvider>
+            </PageTitleProvider>
+          </CandidatesProvider>
+        </ThresholdProvider>
+      </RoleProvider>
+    </ThemeProvider>
+  );
+}
+
+export default App;
