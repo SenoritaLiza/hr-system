@@ -1,0 +1,19 @@
+.view-header{
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1.25rem;
+  flex-wrap: wrap
+}
+
+.view-title{
+  font-size: 1.5rem;
+  font-weight: 700
+}
+
+.view-sub{
+  color: var(--ink-muted);
+  font-size: .9rem;
+  margin-top: .2rem
+}
