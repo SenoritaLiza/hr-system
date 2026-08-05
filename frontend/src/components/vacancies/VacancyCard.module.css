@@ -1,0 +1,60 @@
+.vac-card{
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem 1.25rem;
+  border-bottom: 1px solid var(--border)
+}
+
+.vac-card:last-child{
+  border-bottom: none
+}
+
+.vac-icon{
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  background: var(--accent-soft);
+  color: var(--accent);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0
+}
+
+.vac-icon svg{
+  width: 19px;
+  height: 19px
+}
+
+.vac-main{
+  flex: 1;
+  min-width: 0
+}
+
+.vac-main strong{
+  font-size: .92rem;
+  font-weight: 700;
+  display: block
+}
+
+.vac-main span{
+  font-size: .78rem;
+  color: var(--ink-muted)
+}
+
+.vac-stat{
+  text-align: center;
+  min-width: 70px
+}
+
+.vac-stat .num{
+  display: block;
+  font-size: 1.05rem;
+  font-weight: 600
+}
+
+.vac-stat .l{
+  font-size: .72rem;
+  color: var(--ink-muted)
+}
