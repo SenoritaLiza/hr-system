@@ -1,0 +1,44 @@
+.dropzone{
+  border: 2px dashed var(--border);
+  border-radius: var(--radius-card);
+  padding: 2.4rem 1.5rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: .6rem;
+  color: var(--ink-muted);
+  transition: border-color .15s ease, background .15s ease
+}
+
+.dropzone.drag{
+  border-color: var(--accent);
+  background: var(--accent-soft)
+}
+
+.dropzone .dz-icon{
+  width: 46px;
+  height: 46px;
+  border-radius: 99px;
+  background: var(--accent-soft);
+  color: var(--accent);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: .3rem
+}
+
+.dropzone .dz-icon svg{
+  width: 22px;
+  height: 22px
+}
+
+.dropzone strong{
+  color: var(--ink);
+  font-size: .95rem
+}
+
+.dropzone .dz-formats{
+  font-size: .75rem;
+  color: var(--ink-muted)
+}

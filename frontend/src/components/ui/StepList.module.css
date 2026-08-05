@@ -1,0 +1,28 @@
+.step-list{
+  display: flex;
+  flex-direction: column;
+  gap: .5rem;
+  font-size: .82rem;
+  color: var(--ink-muted)
+}
+
+.step-item{
+  display: flex;
+  align-items: center;
+  gap: .55rem
+}
+
+.step-item svg{
+  width: 15px;
+  height: 15px;
+  flex-shrink: 0
+}
+
+.step-item.done{
+  color: var(--good-ink)
+}
+
+.step-item.active{
+  color: var(--accent);
+  font-weight: 600
+}

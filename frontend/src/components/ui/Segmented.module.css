@@ -1,0 +1,23 @@
+.segmented{
+  display: inline-flex;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-ctrl);
+  padding: 3px
+}
+
+.segmented button{
+  border: none;
+  background: none;
+  padding: .45rem .9rem;
+  font-size: .82rem;
+  font-weight: 600;
+  border-radius: 6px;
+  color: var(--ink-muted)
+}
+
+.segmented button.active{
+  background: var(--surface);
+  color: var(--ink);
+  box-shadow: var(--shadow-sm)
+}
