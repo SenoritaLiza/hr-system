@@ -5,6 +5,7 @@ import { ThemeProvider } from "@/context/ThemeContext";
 import { RoleProvider } from "@/context/RoleContext";
 import { ThresholdProvider } from "@/context/ThresholdContext";
 import { CandidatesProvider } from "@/context/CandidatesContext";
+import { VacanciesProvider } from "@/context/VacanciesContext";
 import { PageTitleProvider } from "@/context/PageTitleContext";
 import { ToastProvider } from "@/context/ToastContext";
 import { PATHS } from "@/router/paths";
@@ -18,19 +19,21 @@ function App() {
       <RoleProvider>
         <ThresholdProvider>
           <CandidatesProvider>
-            <PageTitleProvider>
-              <ToastProvider>
-                <IconSprite />
-                <Routes>
-                  <Route element={<AppShell />}>
-                    <Route path="/" element={<Navigate to={PATHS.vacancies} replace />} />
-                    <Route path={PATHS.vacancies} element={<VacanciesPage />} />
-                    <Route path={PATHS.vacancyPipeline} element={<VacancyPipelinePage />} />
-                    <Route path="*" element={<Navigate to={PATHS.vacancies} replace />} />
-                  </Route>
-                </Routes>
-              </ToastProvider>
-            </PageTitleProvider>
+            <VacanciesProvider>
+              <PageTitleProvider>
+                <ToastProvider>
+                  <IconSprite />
+                  <Routes>
+                    <Route element={<AppShell />}>
+                      <Route path="/" element={<Navigate to={PATHS.vacancies} replace />} />
+                      <Route path={PATHS.vacancies} element={<VacanciesPage />} />
+                      <Route path={PATHS.vacancyPipeline} element={<VacancyPipelinePage />} />
+                      <Route path="*" element={<Navigate to={PATHS.vacancies} replace />} />
+                    </Route>
+                  </Routes>
+                </ToastProvider>
+              </PageTitleProvider>
+            </VacanciesProvider>
           </CandidatesProvider>
         </ThresholdProvider>
       </RoleProvider>

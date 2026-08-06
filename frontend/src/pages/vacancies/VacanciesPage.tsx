@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { PageHeader } from "@/components/layout/PageHeader";
 import { Card } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
@@ -6,23 +6,15 @@ import { Field, FormRow, Input } from "@/components/ui/FormField";
 import { Icon } from "@/components/icons/Icon";
 import { VacancyCard } from "@/components/vacancies/VacancyCard";
 import { usePageTitle } from "@/context/PageTitleContext";
-import { createVacancy, fetchVacancies } from "@/lib/vacanciesApi";
+import { useVacancies } from "@/context/VacanciesContext";
+import { useCurrentPersona } from "@/context/RoleContext";
+import { createVacancy } from "@/lib/vacanciesApi";
 import type { Vacancy } from "@/types/vacancy";
 
 export function VacanciesPage() {
   usePageTitle("Вакансии");
-  const [vacancies, setVacancies] = useState<Vacancy[] | null>(null);
-  const [error, setError] = useState<string | null>(null);
+  const { vacancies, error, addVacancy } = useVacancies();
   const [formOpen, setFormOpen] = useState(false);
-
-  const load = () => {
-    setError(null);
-    fetchVacancies()
-      .then(setVacancies)
-      .catch(() => setError("Не удалось загрузить вакансии"));
-  };
-
-  useEffect(load, []);
 
   const openCount = vacancies?.filter((v) => v.status !== "closed").length ?? 0;
 
@@ -43,7 +35,7 @@ export function VacanciesPage() {
         <Card padded style={{ marginBottom: "1rem" }}>
           <NewVacancyForm
             onCreated={(vacancy) => {
-              setVacancies((prev) => [vacancy, ...(prev ?? [])]);
+              addVacancy(vacancy);
               setFormOpen(false);
             }}
           />
@@ -70,9 +62,10 @@ export function VacanciesPage() {
 }
 
 function NewVacancyForm({ onCreated }: { onCreated: (v: Vacancy) => void }) {
+  const persona = useCurrentPersona();
   const [title, setTitle] = useState("");
   const [department, setDepartment] = useState("");
-  const [owner, setOwner] = useState("Елизавета Ныркова");
+  const [owner, setOwner] = useState(persona.name);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
