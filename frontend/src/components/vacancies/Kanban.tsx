@@ -4,14 +4,16 @@ import type { IconName } from "@/components/icons/Icon";
 import type { PipelineCard, PipelineStage } from "@/types/vacancy";
 import { Avatar } from "@/components/ui/Avatar";
 import { Badge } from "@/components/ui/Badge";
+import { useThreshold } from "@/context/ThresholdContext";
+import { computeStatus, STATUS_ICON, STATUS_LABEL } from "@/lib/status";
 import { candidateResultPath } from "@/router/paths";
 import styles from "@/components/vacancies/Kanban.module.css";
 
-const CARD_BADGE: Record<PipelineCard["status"], { variant: BadgeVariant; icon?: IconName }> = {
-  good: { variant: "good", icon: "check-circle" },
-  warning: { variant: "warning", icon: "alert-triangle" },
-  critical: { variant: "critical", icon: "x-circle" },
-  unscored: { variant: "neutral" },
+const CARD_BADGE: Record<ReturnType<typeof computeStatus> | "unscored", { variant: BadgeVariant; icon?: IconName; label: string }> = {
+  good: { variant: "good", icon: STATUS_ICON.good, label: STATUS_LABEL.good },
+  warning: { variant: "warning", icon: STATUS_ICON.warning, label: STATUS_LABEL.warning },
+  critical: { variant: "critical", icon: STATUS_ICON.critical, label: STATUS_LABEL.critical },
+  unscored: { variant: "neutral", label: "Без оценки" },
 };
 
 export function Kanban({ stages }: { stages: PipelineStage[] }) {
@@ -37,7 +39,9 @@ export function Kanban({ stages }: { stages: PipelineStage[] }) {
 
 function KanbanCardItem({ card }: { card: PipelineCard }) {
   const navigate = useNavigate();
-  const badge = CARD_BADGE[card.status];
+  const { threshold } = useThreshold();
+  const status = card.score === null ? "unscored" : computeStatus(card.score, threshold);
+  const badge = CARD_BADGE[status];
 
   return (
     <div
@@ -53,7 +57,7 @@ function KanbanCardItem({ card }: { card: PipelineCard }) {
         </div>
       </div>
       <Badge variant={badge.variant} icon={badge.icon}>
-        {card.statusLabel}
+        {badge.label}
       </Badge>
     </div>
   );
