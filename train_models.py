@@ -9,7 +9,7 @@
 6. Сохранение моделей в папку models/
 
 Запуск:
-    python train_models.py [--data data.csv]
+    python train_models.py [--data data.csv data_ru.csv ...]
 """
 
 import os
@@ -54,14 +54,15 @@ MODELS_DIR = "models"
 # 1. Загрузка данных
 # ────────────────────────────────────────────────────────────────────────────
 
-def load_data(path: str) -> pd.DataFrame:
-    df = pd.read_csv(path)
+def load_data(paths: list[str]) -> pd.DataFrame:
+    frames = [pd.read_csv(p) for p in paths]
+    df = pd.concat(frames, ignore_index=True).sample(frac=1, random_state=RANDOM_STATE).reset_index(drop=True)
     df.columns = [c.strip().lower() for c in df.columns]
     required = ["experience_text", "skills", "education", "target"]
     missing = [c for c in required if c not in df.columns]
     if missing:
         raise ValueError(f"Отсутствуют столбцы: {missing}")
-    print(f"Загружено {len(df)} строк, столбцы: {list(df.columns)}")
+    print(f"Загружено {len(df)} строк из {paths}, столбцы: {list(df.columns)}")
     return df
 
 
@@ -254,9 +255,9 @@ def save_models(models_dir, tfidf, lr, rf, svd_base, cat_base,
 # main
 # ────────────────────────────────────────────────────────────────────────────
 
-def main(data_path: str):
+def main(data_paths: list[str]):
     # 1. Загрузка
-    df = load_data(data_path)
+    df = load_data(data_paths)
 
     # 2. Предобработка
     df = prepare_texts(df)
@@ -318,6 +319,6 @@ def main(data_path: str):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Train HR classification models")
-    parser.add_argument("--data", default="data.csv", help="Путь к CSV-файлу")
+    parser.add_argument("--data", nargs="+", default=["data.csv", "data_ru.csv"], help="Пути к CSV-файлам (объединяются)")
     args = parser.parse_args()
     main(args.data)
