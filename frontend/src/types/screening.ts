@@ -47,3 +47,19 @@ export interface CandidateDetail {
   sourceFilename: string | null;
   createdAt: string;
 }
+
+export interface CandidateListItem {
+  id: string;
+  vacancyId: string;
+  vacancyTitle: string;
+  name: string;
+  initials: string;
+  stage: string;
+  score: number;
+  position: string;
+  lastPosition: string;
+  totalExperience: number;
+  techSkills: string[];
+  softSkills: string[];
+  createdAt: string;
+}

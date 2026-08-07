@@ -1,0 +1,107 @@
+.table-scroll{
+  overflow-x: auto
+}
+
+table.data-table{
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 760px
+}
+
+.data-table thead th{
+  text-align: left;
+  font-size: .72rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: .05em;
+  color: var(--ink-muted);
+  padding: .7rem 1rem;
+  border-bottom: 1px solid var(--border);
+  white-space: nowrap
+}
+
+.data-table td{
+  padding: .75rem 1rem;
+  border-bottom: 1px solid var(--border);
+  font-size: .87rem;
+  vertical-align: middle
+}
+
+.data-table tbody tr{
+  transition: background .12s ease
+}
+
+.data-table tbody tr:hover{
+  background: var(--surface-hover)
+}
+
+.data-table tbody tr:last-child td{
+  border-bottom: none
+}
+
+.cand-name-cell{
+  display: flex;
+  align-items: center;
+  gap: .65rem
+}
+
+.cand-name-cell .avatar{
+  width: 30px;
+  height: 30px;
+  font-size: .68rem
+}
+
+.cand-meta{
+  display: flex;
+  flex-direction: column;
+  line-height: 1.3
+}
+
+.cand-meta strong{
+  font-size: .87rem;
+  font-weight: 600
+}
+
+.cand-meta span{
+  font-size: .76rem;
+  color: var(--ink-muted)
+}
+
+.score-cell{
+  font-family: var(--font-mono);
+  font-weight: 600
+}
+
+.fav-toggle{
+  background: none;
+  border: none;
+  color: var(--ink-muted);
+  display: flex;
+  padding: .2rem
+}
+
+.fav-toggle svg{
+  width: 18px;
+  height: 18px
+}
+
+.fav-toggle.is-fav{
+  color: #f0b429
+}
+
+.fav-toggle.is-fav svg{
+  fill: currentColor
+}
+
+.flag-note{
+  display: inline-flex;
+  align-items: center;
+  gap: .3rem;
+  font-size: .74rem;
+  color: var(--serious-ink)
+}
+
+.flag-note svg{
+  width: 13px;
+  height: 13px
+}
