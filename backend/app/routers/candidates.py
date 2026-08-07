@@ -2,12 +2,15 @@ from fastapi import APIRouter, Depends, File, Form, HTTPException, UploadFile
 from sqlalchemy.orm import Session
 
 from app.db import get_db
-from app.ml.scoring import score_resume
+from app.ml.scoring import extract_matched_skills, score_resume
 from app.ml.text_extract import UnsupportedFileFormat, extract_text
 from app.models import Candidate, Vacancy
-from app.schemas import BulkCandidateResultOut, CandidateOut
+from app.schemas import BulkCandidateResultOut, CandidateDetailOut, CandidateOut
+from ner_module import EDU_LABELS, SENIORITY_LABELS
+from preprocessing import build_full_text
 
 router = APIRouter(prefix="/vacancies/{vacancy_id}/candidates", tags=["candidates"])
+detail_router = APIRouter(prefix="/candidates", tags=["candidates"])
 
 
 def _get_vacancy_or_404(vacancy_id: int, db: Session) -> Vacancy:
@@ -102,6 +105,51 @@ async def create_candidate(
     }
     candidate = _score_and_save(db, vacancy_id, name, row, source_filename)
     return _to_out(candidate)
+
+
+def _to_detail_out(candidate: Candidate, vacancy: Vacancy) -> CandidateDetailOut:
+    ner = candidate.ner_features
+    full_text = build_full_text(
+        {
+            "experience_text": candidate.experience_text,
+            "skills": candidate.skills,
+            "education": candidate.education,
+        }
+    )
+    tech_skills, soft_skills = extract_matched_skills(full_text)
+
+    return CandidateDetailOut(
+        id=candidate.id,
+        vacancy_id=candidate.vacancy_id,
+        vacancy_title=vacancy.title,
+        name=candidate.name,
+        stage=candidate.stage,
+        score=round(candidate.score * 100),
+        lr_proba=candidate.lr_proba,
+        rf_proba=candidate.rf_proba,
+        cat_proba=candidate.cat_proba,
+        position=candidate.position,
+        last_position=candidate.last_position,
+        seniority_label=SENIORITY_LABELS.get(ner["seniority"], "—"),
+        education_label=EDU_LABELS.get(ner["edu_level"], "—"),
+        grad_year=ner["grad_year"] or None,
+        total_experience=candidate.total_experience,
+        tech_skills=tech_skills,
+        soft_skills=soft_skills,
+        positive_factors=candidate.positive_factors,
+        negative_factors=candidate.negative_factors,
+        source_filename=candidate.source_filename,
+        created_at=candidate.created_at,
+    )
+
+
+@detail_router.get("/{candidate_id}", response_model=CandidateDetailOut)
+def get_candidate(candidate_id: int, db: Session = Depends(get_db)) -> CandidateDetailOut:
+    candidate = db.get(Candidate, candidate_id)
+    if candidate is None:
+        raise HTTPException(status_code=404, detail="Кандидат не найден")
+    vacancy = db.get(Vacancy, candidate.vacancy_id)
+    return _to_detail_out(candidate, vacancy)
 
 
 @router.post("/bulk", response_model=list[BulkCandidateResultOut])

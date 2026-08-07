@@ -1,4 +1,4 @@
-from datetime import date
+from datetime import date, datetime
 
 from pydantic import BaseModel
 
@@ -71,3 +71,27 @@ class BulkCandidateResultOut(BaseModel):
     status: str
     candidate: CandidateOut | None = None
     error_message: str | None = None
+
+
+class CandidateDetailOut(BaseModel):
+    id: int
+    vacancy_id: int
+    vacancy_title: str
+    name: str
+    stage: str
+    score: int
+    lr_proba: float
+    rf_proba: float
+    cat_proba: float
+    position: str
+    last_position: str
+    seniority_label: str
+    education_label: str
+    grad_year: int | None
+    total_experience: float
+    tech_skills: list[str]
+    soft_skills: list[str]
+    positive_factors: list[ExplanationFactorOut]
+    negative_factors: list[ExplanationFactorOut]
+    source_filename: str | None
+    created_at: datetime

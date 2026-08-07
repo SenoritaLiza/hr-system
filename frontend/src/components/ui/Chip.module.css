@@ -1,0 +1,17 @@
+.chip{
+  display: inline-flex;
+  align-items: center;
+  font-size: .78rem;
+  font-weight: 500;
+  padding: .28rem .65rem;
+  border-radius: 99px;
+  background: var(--surface-2);
+  color: var(--ink-2);
+  border: 1px solid var(--border)
+}
+
+.chip-row{
+  display: flex;
+  flex-wrap: wrap;
+  gap: .4rem
+}

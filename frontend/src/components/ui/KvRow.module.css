@@ -1,0 +1,21 @@
+.kv-row{
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: .5rem 0;
+  border-bottom: 1px solid var(--border);
+  font-size: .85rem
+}
+
+.kv-row:last-child{
+  border-bottom: none
+}
+
+.kv-row .k{
+  color: var(--ink-muted)
+}
+
+.kv-row .v{
+  font-weight: 600;
+  text-align: right
+}

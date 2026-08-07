@@ -23,3 +23,27 @@ export interface BulkCandidateResult {
   candidate: CandidateScreeningResult | null;
   errorMessage: string | null;
 }
+
+export interface CandidateDetail {
+  id: string;
+  vacancyId: string;
+  vacancyTitle: string;
+  name: string;
+  stage: string;
+  score: number;
+  lrProba: number;
+  rfProba: number;
+  catProba: number;
+  position: string;
+  lastPosition: string;
+  seniorityLabel: string;
+  educationLabel: string;
+  gradYear: number | null;
+  totalExperience: number;
+  techSkills: string[];
+  softSkills: string[];
+  positiveFactors: ExplanationFactor[];
+  negativeFactors: ExplanationFactor[];
+  sourceFilename: string | null;
+  createdAt: string;
+}

@@ -5,7 +5,7 @@ import numpy as np
 from scipy.sparse import csr_matrix, hstack
 
 from app.config import settings
-from ner_module import NER_FEATURE_NAMES, NER_FEATURE_NAMES_RU, extract_ner_features
+from ner_module import NER_FEATURE_NAMES, NER_FEATURE_NAMES_RU, SOFT_SKILLS_PHRASES, TECH_KEYWORDS, extract_ner_features
 from preprocessing import build_full_text, preprocess_text
 
 _MODEL_NAMES = ["tfidf", "hybrid_lr", "hybrid_rf", "hybrid_svd", "hybrid_cat", "ner_scaler"]
@@ -54,6 +54,14 @@ def score_resume(row: dict) -> dict:
         "positive_factors": positive_factors,
         "negative_factors": negative_factors,
     }
+
+
+# Найденные в тексте резюме технические и гибкие навыки 
+def extract_matched_skills(full_text: str) -> tuple[list[str], list[str]]:
+    text = full_text.lower()
+    tech = sorted(kw for kw in TECH_KEYWORDS if kw in text)
+    soft = sorted(ph for ph in SOFT_SKILLS_PHRASES if ph in text)
+    return tech, soft
 
 
 # Топ положительных/отрицательных факторов решения
