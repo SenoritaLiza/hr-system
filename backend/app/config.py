@@ -6,6 +6,7 @@ class Settings(BaseSettings):
 
     database_url: str = "postgresql+psycopg://hrsystem:hrsystem@db:5432/hrsystem"
     cors_origins: list[str] = ["http://localhost:8080", "http://localhost:5183"]
+    models_dir: str = "models"
 
 
 settings = Settings()

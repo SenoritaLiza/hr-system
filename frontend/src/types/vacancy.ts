@@ -28,6 +28,4 @@ export interface PipelineCard {
   initials: string;
   note: string;
   score: number | null;
-  status: "good" | "warning" | "critical" | "unscored";
-  statusLabel: string;
 }

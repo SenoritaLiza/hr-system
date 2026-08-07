@@ -1,6 +1,7 @@
 # Данные
 data.csv
 *.csv
+!data_ru.csv
 
 # Сохранённые модели
 models/

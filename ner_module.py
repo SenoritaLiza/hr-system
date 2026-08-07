@@ -33,35 +33,43 @@ SOFT_SKILLS_PHRASES = {
     "responsible", "detail oriented", "stakeholders", "presentation",
     "research", "quick learner", "worked in a team", "commercial experience",
     "hands-on", "practical experience", "participated in",
+    "коммуникация", "командная работа", "лидерство", "инициативность",
+    "ответственность", "внимание к деталям", "стейкхолдеры", "презентация",
+    "исследование", "быстро обучаюсь", "работал в команде", "коммерческий опыт",
+    "практический опыт", "участвовал в",
 }
 
 ACTION_PHRASES = {
     "implemented", "developed", "built", "optimized", "led", "designed",
     "automated", "analysed", "improved", "supported", "delivered",
     "deployed", "architected", "managed", "created", "launched",
+    "внедрил", "разработал", "построил", "оптимизировал", "руководил",
+    "спроектировал", "автоматизировал", "проанализировал", "улучшил",
+    "поддерживал", "поставил", "развернул", "спроектировал архитектуру",
+    "управлял", "создал", "запустил",
 }
 
 # Уровни должности (чем выше — тем выше уровень)
 SENIORITY_MAP = {
-    "intern": 1,
-    "junior": 2,
-    "specialist": 3,
-    "analyst": 3,
-    "middle": 4,
-    "engineer": 4,
-    "senior": 5,
-    "lead": 6,
+    "intern": 1, "стажёр": 1, "стажер": 1,
+    "junior": 2, "джуниор": 2,
+    "specialist": 3, "специалист": 3,
+    "analyst": 3, "аналитик": 3,
+    "middle": 4, "мидл": 4, "миддл": 4,
+    "engineer": 4, "инженер": 4,
+    "senior": 5, "сеньор": 5, "синьор": 5,
+    "lead": 6, "лид": 6, "ведущий": 6,
     "principal": 6,
-    "head": 7,
-    "architect": 7,
-    "director": 8,
+    "head": 7, "руководитель": 7,
+    "architect": 7, "архитектор": 7,
+    "director": 8, "директор": 8,
 }
 
 EDU_LEVEL_MAP = {
-    "phd": 4, "doctor": 4, "candidate": 4,
+    "phd": 4, "doctor": 4, "candidate": 4, "кандидат наук": 4,
     "master": 3, "мастер": 3, "магистр": 3,
     "bachelor": 2, "бакалавр": 2,
-    "college": 1, "diploma": 1,
+    "college": 1, "diploma": 1, "среднее": 1,
 }
 
 
@@ -103,7 +111,11 @@ def get_grad_year(education: str) -> int:
     """Год выпуска из строки education."""
     if not education or pd.isna(education):
         return 0
-    match = re.search(r"(\d{4})\s+graduation", str(education).lower())
+    edu = str(education).lower()
+    match = re.search(r"(\d{4})\s*(?:graduation|год\s+окончания|г\.?\s*выпуска|выпуск)", edu)
+    if match:
+        return int(match.group(1))
+    match = re.search(r"(?:окончил[а]?|выпускник[а]?)\D{0,15}(\d{4})", edu)
     return int(match.group(1)) if match else 0
 
 

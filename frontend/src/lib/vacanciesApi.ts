@@ -1,5 +1,5 @@
 import { apiFetch } from "@/lib/api";
-import type { PipelineCard, PipelineStage, PipelineStageId, Vacancy, VacancyStatus } from "@/types/vacancy";
+import type { PipelineStage, PipelineStageId, Vacancy, VacancyStatus } from "@/types/vacancy";
 
 interface ApiVacancy {
   id: number;
@@ -18,8 +18,6 @@ interface ApiPipelineCard {
   initials: string;
   note: string;
   score: number | null;
-  status: PipelineCard["status"];
-  status_label: string;
 }
 
 interface ApiPipelineStage {
@@ -73,8 +71,6 @@ function mapPipelineStage(s: ApiPipelineStage): PipelineStage {
       initials: c.initials,
       note: c.note,
       score: c.score,
-      status: c.status,
-      statusLabel: c.status_label,
     })),
   };
 }

@@ -1,10 +1,20 @@
 import { useNavigate } from "react-router-dom";
+import type { BadgeVariant } from "@/components/ui/Badge";
+import type { IconName } from "@/components/icons/Icon";
 import type { PipelineCard, PipelineStage } from "@/types/vacancy";
 import { Avatar } from "@/components/ui/Avatar";
 import { Badge } from "@/components/ui/Badge";
-import { STATUS_ICON } from "@/lib/status";
+import { useThreshold } from "@/context/ThresholdContext";
+import { computeStatus, STATUS_ICON, STATUS_LABEL } from "@/lib/status";
 import { candidateResultPath } from "@/router/paths";
 import styles from "@/components/vacancies/Kanban.module.css";
+
+const CARD_BADGE: Record<ReturnType<typeof computeStatus> | "unscored", { variant: BadgeVariant; icon?: IconName; label: string }> = {
+  good: { variant: "good", icon: STATUS_ICON.good, label: STATUS_LABEL.good },
+  warning: { variant: "warning", icon: STATUS_ICON.warning, label: STATUS_LABEL.warning },
+  critical: { variant: "critical", icon: STATUS_ICON.critical, label: STATUS_LABEL.critical },
+  unscored: { variant: "neutral", label: "Без оценки" },
+};
 
 export function Kanban({ stages }: { stages: PipelineStage[] }) {
   return (
@@ -29,13 +39,15 @@ export function Kanban({ stages }: { stages: PipelineStage[] }) {
 
 function KanbanCardItem({ card }: { card: PipelineCard }) {
   const navigate = useNavigate();
-  const isRealCandidate = !card.candidateId.startsWith("cx");
+  const { threshold } = useThreshold();
+  const status = card.score === null ? "unscored" : computeStatus(card.score, threshold);
+  const badge = CARD_BADGE[status];
 
   return (
     <div
       className={styles["kanban-card"]}
-      style={isRealCandidate ? { cursor: "pointer" } : undefined}
-      onClick={() => isRealCandidate && navigate(candidateResultPath(card.candidateId))}
+      style={{ cursor: "pointer" }}
+      onClick={() => navigate(candidateResultPath(card.candidateId))}
     >
       <div className={styles["kanban-card-top"]}>
         <Avatar initials={card.initials} size={26} />
@@ -44,8 +56,8 @@ function KanbanCardItem({ card }: { card: PipelineCard }) {
           <span>{card.note}</span>
         </div>
       </div>
-      <Badge variant={card.status === "unscored" ? "neutral" : card.status} icon={card.status !== "unscored" ? STATUS_ICON[card.status] : undefined}>
-        {card.statusLabel}
+      <Badge variant={badge.variant} icon={badge.icon}>
+        {badge.label}
       </Badge>
     </div>
   );

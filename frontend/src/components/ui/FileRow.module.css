@@ -1,0 +1,68 @@
+.file-row{
+  display: flex;
+  align-items: center;
+  gap: .7rem;
+  padding: .65rem 0;
+  border-bottom: 1px solid var(--border);
+  font-size: .85rem
+}
+
+.file-row:last-child{
+  border-bottom: none
+}
+
+.file-icon{
+  width: 36px;
+  height: 36px;
+  border-radius: 9px;
+  background: var(--surface-2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--ink-muted);
+  flex-shrink: 0
+}
+
+.file-icon svg{
+  width: 17px;
+  height: 17px
+}
+
+.file-icon.err{
+  background: var(--critical-soft);
+  color: var(--critical-ink)
+}
+
+.file-icon.ok{
+  background: var(--good-soft);
+  color: var(--good-ink)
+}
+
+.file-meta{
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: .3rem
+}
+
+.file-name{
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis
+}
+
+.file-sub{
+  font-size: .75rem;
+  color: var(--ink-muted)
+}
+
+.file-sub.err{
+  color: var(--critical-ink)
+}
+
+.file-progress-track{
+  width: 110px;
+  flex-shrink: 0
+}

@@ -1,10 +1,9 @@
-import { useEffect, useState } from "react";
 import { NavLink } from "react-router-dom";
 import { Icon } from "@/components/icons/Icon";
 import { Avatar } from "@/components/ui/Avatar";
 import { useRole, useCurrentPersona } from "@/context/RoleContext";
 import { useCandidates } from "@/context/CandidatesContext";
-import { fetchVacancies } from "@/lib/vacanciesApi";
+import { useVacancies } from "@/context/VacanciesContext";
 import { ADMIN_NAV, RECRUITER_NAV, type NavItem } from "@/components/layout/navItems";
 import { PATHS } from "@/router/paths";
 import styles from "@/components/layout/Sidebar.module.css";
@@ -13,13 +12,8 @@ export function Sidebar() {
   const { role } = useRole();
   const persona = useCurrentPersona();
   const { candidates } = useCandidates();
-  const [openVacancies, setOpenVacancies] = useState(0);
-
-  useEffect(() => {
-    fetchVacancies()
-      .then((list) => setOpenVacancies(list.filter((v) => v.status !== "closed").length))
-      .catch(() => setOpenVacancies(0));
-  }, []);
+  const { vacancies } = useVacancies();
+  const openVacancies = vacancies?.filter((v) => v.status !== "closed").length ?? 0;
 
   const badges: Record<string, number> = {
     vacancies: openVacancies,
