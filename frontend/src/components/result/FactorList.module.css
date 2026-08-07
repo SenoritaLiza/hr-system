@@ -1,0 +1,48 @@
+.factor-list{
+  display: flex;
+  flex-direction: column;
+  gap: .5rem
+}
+
+.factor-row{
+  display: flex;
+  align-items: center;
+  gap: .6rem;
+  font-size: .85rem
+}
+
+.factor-bar-track{
+  flex: 1;
+  height: 7px;
+  border-radius: 99px;
+  background: var(--surface-2);
+  overflow: hidden;
+  position: relative
+}
+
+.factor-bar-fill{
+  height: 100%;
+  border-radius: 99px
+}
+
+.factor-bar-fill.pos{
+  background: var(--good)
+}
+
+.factor-bar-fill.neg{
+  background: var(--critical)
+}
+
+.factor-label{
+  width: 190px;
+  flex-shrink: 0;
+  color: var(--ink-2)
+}
+
+.factor-weight{
+  width: 44px;
+  text-align: right;
+  font-family: var(--font-mono);
+  font-size: .78rem;
+  flex-shrink: 0
+}

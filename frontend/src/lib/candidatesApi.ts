@@ -1,5 +1,5 @@
 import { apiFetch } from "@/lib/api";
-import type { BulkCandidateResult, CandidateScreeningResult, ExplanationFactor } from "@/types/screening";
+import type { BulkCandidateResult, CandidateDetail, CandidateScreeningResult, ExplanationFactor } from "@/types/screening";
 
 interface ApiCandidateOut {
   id: number;
@@ -20,6 +20,30 @@ interface ApiBulkCandidateResult {
   status: string;
   candidate: ApiCandidateOut | null;
   error_message: string | null;
+}
+
+interface ApiCandidateDetail {
+  id: number;
+  vacancy_id: number;
+  vacancy_title: string;
+  name: string;
+  stage: string;
+  score: number;
+  lr_proba: number;
+  rf_proba: number;
+  cat_proba: number;
+  position: string;
+  last_position: string;
+  seniority_label: string;
+  education_label: string;
+  grad_year: number | null;
+  total_experience: number;
+  tech_skills: string[];
+  soft_skills: string[];
+  positive_factors: ExplanationFactor[];
+  negative_factors: ExplanationFactor[];
+  source_filename: string | null;
+  created_at: string;
 }
 
 function mapCandidate(c: ApiCandidateOut): CandidateScreeningResult {
@@ -64,6 +88,32 @@ export function createCandidate(vacancyId: string, input: CreateCandidateInput):
     method: "POST",
     body: form,
   }).then(mapCandidate);
+}
+
+export function fetchCandidate(id: string): Promise<CandidateDetail> {
+  return apiFetch<ApiCandidateDetail>(`/candidates/${id}`).then((c) => ({
+    id: String(c.id),
+    vacancyId: String(c.vacancy_id),
+    vacancyTitle: c.vacancy_title,
+    name: c.name,
+    stage: c.stage,
+    score: c.score,
+    lrProba: c.lr_proba,
+    rfProba: c.rf_proba,
+    catProba: c.cat_proba,
+    position: c.position,
+    lastPosition: c.last_position,
+    seniorityLabel: c.seniority_label,
+    educationLabel: c.education_label,
+    gradYear: c.grad_year,
+    totalExperience: c.total_experience,
+    techSkills: c.tech_skills,
+    softSkills: c.soft_skills,
+    positiveFactors: c.positive_factors,
+    negativeFactors: c.negative_factors,
+    sourceFilename: c.source_filename,
+    createdAt: c.created_at,
+  }));
 }
 
 export function createCandidatesBulk(vacancyId: string, files: File[]): Promise<BulkCandidateResult[]> {
