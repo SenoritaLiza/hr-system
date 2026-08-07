@@ -31,9 +31,12 @@ services:
 
   backend:
     build:
-      context: ./backend
+      context: .
+      dockerfile: backend/Dockerfile
     environment:
       DATABASE_URL: postgresql+psycopg://hrsystem:hrsystem@db:5432/hrsystem
+    volumes:
+      - ./models:/app/models
     ports:
       - "8010:8000"
     depends_on:
