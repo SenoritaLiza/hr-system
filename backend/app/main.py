@@ -5,6 +5,7 @@ from sqlalchemy.orm import Session
 
 from .config import settings
 from .db import get_db
+from .routers.candidates import detail_router as candidate_detail_router
 from .routers.candidates import router as candidates_router
 from .routers.vacancies import router as vacancies_router
 
@@ -20,6 +21,7 @@ app.add_middleware(
 
 app.include_router(vacancies_router)
 app.include_router(candidates_router)
+app.include_router(candidate_detail_router)
 
 
 @app.get("/health")
