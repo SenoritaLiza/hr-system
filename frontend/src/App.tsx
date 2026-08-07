@@ -12,6 +12,8 @@ import { PATHS } from "@/router/paths";
 
 import { VacanciesPage } from "@/pages/vacancies/VacanciesPage";
 import { VacancyPipelinePage } from "@/pages/vacancies/VacancyPipelinePage";
+import { UploadPage } from "@/pages/upload/UploadPage";
+import { BulkUploadPage } from "@/pages/upload/BulkUploadPage";
 
 function App() {
   return (
@@ -28,6 +30,8 @@ function App() {
                       <Route path="/" element={<Navigate to={PATHS.vacancies} replace />} />
                       <Route path={PATHS.vacancies} element={<VacanciesPage />} />
                       <Route path={PATHS.vacancyPipeline} element={<VacancyPipelinePage />} />
+                      <Route path={PATHS.upload} element={<UploadPage />} />
+                      <Route path={PATHS.bulkUpload} element={<BulkUploadPage />} />
                       <Route path="*" element={<Navigate to={PATHS.vacancies} replace />} />
                     </Route>
                   </Routes>
