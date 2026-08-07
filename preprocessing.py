@@ -1,12 +1,7 @@
-"""Общий модуль предобработки текста для HR-системы.
-
-Используется и в скрипте обучения (train_models.py) и в Streamlit-приложении (app.py).
-"""
-
+import platform
 import re
 import nltk
 
-# Загрузка ресурсов NLTK при импорте
 for resource in ["punkt", "punkt_tab", "stopwords"]:
     try:
         nltk.download(resource, quiet=True)
@@ -23,8 +18,12 @@ RU_STOPWORDS = set(stopwords.words("russian")) | {
     "работала", "работать", "проект", "проекты",
 }
 
-# Попытка подключить mystem; fallback — без лемматизации
 try:
+    if platform.machine() not in ("x86_64", "AMD64"):
+        # Бинарник Yandex Mystem собирается только под x86_64: на arm64 вызов не падает
+        # с исключением, а зависает (сломанный subprocess), поэтому проверяем архитектуру
+        # заранее и не пытаемся его запускать вовсе.
+        raise RuntimeError("mystem недоступен на этой архитектуре")
     from pymystem3 import Mystem
     _mystem = Mystem()
     _USE_MYSTEM = True
@@ -33,8 +32,8 @@ except Exception:
     _USE_MYSTEM = False
 
 
+# Очистка и лемматизация текста резюме
 def preprocess_text(text: str) -> str:
-    """Очистка и лемматизация текста резюме."""
     text = str(text).lower()
     text = re.sub(r"[^a-zа-яё\s]", " ", text)
     text = re.sub(r"\s+", " ", text).strip()
@@ -64,8 +63,8 @@ def preprocess_text(text: str) -> str:
     return " ".join(filtered)
 
 
+# Объединение текстовых столбцов резюме в одну строку
 def build_full_text(row) -> str:
-    """Объединяет текстовые столбцы резюме в одну строку."""
     parts = [
         str(row.get("experience_text", "") or ""),
         str(row.get("skills", "") or ""),
