@@ -5,6 +5,7 @@ from sqlalchemy.orm import Session
 from app.db import get_db
 from app.models import Candidate, Vacancy
 from app.schemas import PipelineCardOut, PipelineStageOut, VacancyCreate, VacancyOut
+from app.text_utils import initials
 
 router = APIRouter(prefix="/vacancies", tags=["vacancies"])
 
@@ -17,11 +18,6 @@ PIPELINE_STAGES = [
 ]
 
 CARDS_PER_STAGE_LIMIT = 5
-
-
-def _initials(name: str) -> str:
-    parts = name.split()
-    return "".join(p[0] for p in parts[:2]).upper()
 
 
 def _to_out(vacancy: Vacancy, db: Session) -> VacancyOut:
@@ -49,7 +45,7 @@ def _candidate_to_card(candidate: Candidate) -> PipelineCardOut:
     return PipelineCardOut(
         candidate_id=str(candidate.id),
         name=candidate.name,
-        initials=_initials(candidate.name),
+        initials=initials(candidate.name),
         note=candidate.last_position or candidate.position or "—",
         score=round(candidate.score * 100),
     )
