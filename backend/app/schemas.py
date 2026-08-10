@@ -86,6 +86,7 @@ class CandidateListItemOut(BaseModel):
     total_experience: float
     tech_skills: list[str]
     soft_skills: list[str]
+    favorite: bool
     created_at: datetime
 
 
@@ -110,4 +111,5 @@ class CandidateDetailOut(BaseModel):
     positive_factors: list[ExplanationFactorOut]
     negative_factors: list[ExplanationFactorOut]
     source_filename: str | None
+    favorite: bool
     created_at: datetime

@@ -145,6 +145,7 @@ def _to_detail_out(candidate: Candidate, vacancy: Vacancy) -> CandidateDetailOut
         positive_factors=candidate.positive_factors,
         negative_factors=candidate.negative_factors,
         source_filename=candidate.source_filename,
+        favorite=candidate.favorite,
         created_at=candidate.created_at,
     )
 
@@ -154,6 +155,18 @@ def get_candidate(candidate_id: int, db: Session = Depends(get_db)) -> Candidate
     candidate = db.get(Candidate, candidate_id)
     if candidate is None:
         raise HTTPException(status_code=404, detail="Кандидат не найден")
+    vacancy = db.get(Vacancy, candidate.vacancy_id)
+    return _to_detail_out(candidate, vacancy)
+
+
+@detail_router.post("/{candidate_id}/favorite/toggle", response_model=CandidateDetailOut)
+def toggle_favorite(candidate_id: int, db: Session = Depends(get_db)) -> CandidateDetailOut:
+    candidate = db.get(Candidate, candidate_id)
+    if candidate is None:
+        raise HTTPException(status_code=404, detail="Кандидат не найден")
+    candidate.favorite = not candidate.favorite
+    db.commit()
+    db.refresh(candidate)
     vacancy = db.get(Vacancy, candidate.vacancy_id)
     return _to_detail_out(candidate, vacancy)
 
@@ -173,6 +186,7 @@ def _to_list_item(candidate: Candidate, vacancy_title: str) -> CandidateListItem
         total_experience=candidate.total_experience,
         tech_skills=tech_skills,
         soft_skills=soft_skills,
+        favorite=candidate.favorite,
         created_at=candidate.created_at,
     )
 

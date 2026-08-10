@@ -1,6 +1,6 @@
 from datetime import date, datetime
 
-from sqlalchemy import JSON, Date, DateTime, Float, ForeignKey, String, Text, func
+from sqlalchemy import JSON, Boolean, Date, DateTime, Float, ForeignKey, String, Text, func
 from sqlalchemy.orm import Mapped, mapped_column
 
 from app.db import Base
@@ -32,6 +32,7 @@ class Candidate(Base):
     total_experience: Mapped[float] = mapped_column(Float, default=0)
     last_position: Mapped[str] = mapped_column(String(200), default="")
     source_filename: Mapped[str | None] = mapped_column(String(300), nullable=True)
+    favorite: Mapped[bool] = mapped_column(Boolean, default=False)
     score: Mapped[float] = mapped_column(Float)
     lr_proba: Mapped[float] = mapped_column(Float)
     rf_proba: Mapped[float] = mapped_column(Float)
