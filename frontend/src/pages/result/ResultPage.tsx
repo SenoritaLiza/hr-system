@@ -13,7 +13,7 @@ import { GaugeChart } from "@/components/charts/GaugeChart";
 import { FactorList } from "@/components/result/FactorList";
 import { usePageTitle } from "@/context/PageTitleContext";
 import { useThreshold } from "@/context/ThresholdContext";
-import { fetchCandidate } from "@/lib/candidatesApi";
+import { fetchCandidate, toggleFavorite } from "@/lib/candidatesApi";
 import { PATHS } from "@/router/paths";
 import type { CandidateDetail } from "@/types/screening";
 
@@ -33,6 +33,14 @@ export function ResultPage() {
       .then(setCandidate)
       .catch(() => setError("Не удалось загрузить кандидата"));
   }, [id]);
+
+  const handleToggleFavorite = () => {
+    if (!candidate) return;
+    setCandidate({ ...candidate, favorite: !candidate.favorite });
+    toggleFavorite(candidate.id).catch(() => {
+      setCandidate((prev) => (prev ? { ...prev, favorite: !prev.favorite } : prev));
+    });
+  };
 
   if (error) {
     return (
@@ -60,7 +68,7 @@ export function ResultPage() {
         subtitle={`${candidate.vacancyTitle} · ${candidate.totalExperience} года опыта`}
         action={
           <div style={{ display: "flex", gap: ".6rem" }}>
-            <FavoriteButton active={false} onToggle={() => {}} disabled />
+            <FavoriteButton active={candidate.favorite} onToggle={handleToggleFavorite} />
             <Button disabled title="Скоро">
               Пригласить на интервью
             </Button>
@@ -118,9 +126,7 @@ export function ResultPage() {
 
         <div className="stack">
           {/*
-            TODO: реальная LLM-интеграция ("скрытые признаки" — связность карьеры,
-            соответствие грейду итд). Нужен вызов LLM API + промпт-инжиниринг —
-            отдельная фича
+            TODO: реальная LLM-интеграция, нужен вызов LLM API + промпт-инжиниринг 
           */}
           <Card>
             <CardHeader title="LLM — скрытые признаки" hint="скоро" />

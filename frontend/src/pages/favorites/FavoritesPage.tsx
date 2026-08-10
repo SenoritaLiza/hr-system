@@ -1,5 +1,4 @@
 import { useNavigate } from "react-router-dom";
-import type { Candidate } from "@/types/candidate";
 import { PageHeader } from "@/components/layout/PageHeader";
 import { Card } from "@/components/ui/Card";
 import { EmptyState } from "@/components/ui/EmptyState";
@@ -9,15 +8,15 @@ import { FavoriteButton } from "@/components/candidates/FavoriteButton";
 import { StatusBadge } from "@/components/candidates/StatusBadge";
 import { usePageTitle } from "@/context/PageTitleContext";
 import { useThreshold } from "@/context/ThresholdContext";
+import { useCandidates } from "@/context/CandidatesContext";
 import { candidateResultPath } from "@/router/paths";
 
 export function FavoritesPage() {
   usePageTitle("Избранное");
   const navigate = useNavigate();
   const { threshold } = useThreshold();
-  // Избранное пока не реализовано (нет поля favorite в БД) — см. CandidatesContext
-  const favorites: Candidate[] = [];
-  const toggleFavorite = (_id: string) => {};
+  const { candidates, toggleFavorite } = useCandidates();
+  const favorites = candidates.filter((c) => c.favorite);
 
   return (
     <>
@@ -54,13 +53,10 @@ export function FavoritesPage() {
                 </span>
               </div>
               <ChipRow>
-                {c.skills.slice(0, 3).map((s) => (
+                {c.techSkills.slice(0, 3).map((s) => (
                   <Chip key={s}>{s}</Chip>
                 ))}
               </ChipRow>
-              {c.note && (
-                <p style={{ marginTop: ".8rem", fontSize: ".78rem", color: "var(--ink-muted)" }}>Заметка: {c.note}</p>
-              )}
             </Card>
           ))}
         </div>

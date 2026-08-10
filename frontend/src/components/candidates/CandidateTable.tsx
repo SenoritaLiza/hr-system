@@ -2,6 +2,7 @@ import { useNavigate } from "react-router-dom";
 import type { CandidateListItem } from "@/types/screening";
 import { Avatar } from "@/components/ui/Avatar";
 import { Icon } from "@/components/icons/Icon";
+import { FavoriteButton } from "@/components/candidates/FavoriteButton";
 import { StatusBadge } from "@/components/candidates/StatusBadge";
 import { candidateResultPath } from "@/router/paths";
 import styles from "@/components/candidates/CandidateTable.module.css";
@@ -9,6 +10,7 @@ import styles from "@/components/candidates/CandidateTable.module.css";
 interface CandidateTableProps {
   candidates: CandidateListItem[];
   threshold: number;
+  onToggleFavorite: (id: string) => void;
 }
 
 function formatDate(iso: string): string {
@@ -16,7 +18,7 @@ function formatDate(iso: string): string {
   return `${d}.${m}.${y}`;
 }
 
-export function CandidateTable({ candidates, threshold }: CandidateTableProps) {
+export function CandidateTable({ candidates, threshold, onToggleFavorite }: CandidateTableProps) {
   const navigate = useNavigate();
 
   return (
@@ -24,6 +26,7 @@ export function CandidateTable({ candidates, threshold }: CandidateTableProps) {
       <table className={styles["data-table"]}>
         <thead>
           <tr>
+            <th />
             <th>Кандидат</th>
             <th>Вакансия</th>
             <th>Опыт</th>
@@ -36,6 +39,9 @@ export function CandidateTable({ candidates, threshold }: CandidateTableProps) {
         <tbody>
           {candidates.map((c) => (
             <tr key={c.id} onClick={() => navigate(candidateResultPath(c.id))} style={{ cursor: "pointer" }}>
+              <td>
+                <FavoriteButton active={c.favorite} onToggle={() => onToggleFavorite(c.id)} />
+              </td>
               <td>
                 <div className={styles["cand-name-cell"]}>
                   <Avatar initials={c.initials} />

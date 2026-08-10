@@ -45,6 +45,7 @@ export interface CandidateDetail {
   positiveFactors: ExplanationFactor[];
   negativeFactors: ExplanationFactor[];
   sourceFilename: string | null;
+  favorite: boolean;
   createdAt: string;
 }
 
@@ -61,5 +62,6 @@ export interface CandidateListItem {
   totalExperience: number;
   techSkills: string[];
   softSkills: string[];
+  favorite: boolean;
   createdAt: string;
 }

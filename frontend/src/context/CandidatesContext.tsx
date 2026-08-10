@@ -1,11 +1,12 @@
 import { createContext, useContext, useEffect, useMemo, useState, type ReactNode } from "react";
-import { fetchCandidates } from "@/lib/candidatesApi";
+import { fetchCandidates, toggleFavorite as toggleFavoriteApi } from "@/lib/candidatesApi";
 import type { CandidateListItem } from "@/types/screening";
 
 interface CandidatesContextValue {
   candidates: CandidateListItem[];
   error: string | null;
   reload: () => void;
+  toggleFavorite: (id: string) => void;
 }
 
 const CandidatesContext = createContext<CandidatesContextValue | null>(null);
@@ -23,12 +24,19 @@ export function CandidatesProvider({ children }: { children: ReactNode }) {
 
   useEffect(reload, []);
 
-  const value = useMemo(() => ({ candidates, error, reload }), [candidates, error]);
+  const toggleFavorite = (id: string) => {
+    setCandidates((prev) => prev.map((c) => (c.id === id ? { ...c, favorite: !c.favorite } : c)));
+    toggleFavoriteApi(id).catch(() => {
+      setCandidates((prev) => prev.map((c) => (c.id === id ? { ...c, favorite: !c.favorite } : c)));
+    });
+  };
+
+  const value = useMemo(() => ({ candidates, error, reload, toggleFavorite }), [candidates, error]);
   return <CandidatesContext.Provider value={value}>{children}</CandidatesContext.Provider>;
 }
 
 export function useCandidates(): CandidatesContextValue {
   const ctx = useContext(CandidatesContext);
-  if (!ctx) throw new Error("useCandidates must be used within CandidatesProvider");
+  if (!ctx) throw new Error("useCandidates должен использоваться внутри CandidatesProvider");
   return ctx;
 }

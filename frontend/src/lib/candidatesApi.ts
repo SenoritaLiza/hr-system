@@ -49,6 +49,7 @@ interface ApiCandidateDetail {
   positive_factors: ExplanationFactor[];
   negative_factors: ExplanationFactor[];
   source_filename: string | null;
+  favorite: boolean;
   created_at: string;
 }
 
@@ -65,7 +66,35 @@ interface ApiCandidateListItem {
   total_experience: number;
   tech_skills: string[];
   soft_skills: string[];
+  favorite: boolean;
   created_at: string;
+}
+
+function mapCandidateDetail(c: ApiCandidateDetail): CandidateDetail {
+  return {
+    id: String(c.id),
+    vacancyId: String(c.vacancy_id),
+    vacancyTitle: c.vacancy_title,
+    name: c.name,
+    stage: c.stage,
+    score: c.score,
+    lrProba: c.lr_proba,
+    rfProba: c.rf_proba,
+    catProba: c.cat_proba,
+    position: c.position,
+    lastPosition: c.last_position,
+    seniorityLabel: c.seniority_label,
+    educationLabel: c.education_label,
+    gradYear: c.grad_year,
+    totalExperience: c.total_experience,
+    techSkills: c.tech_skills,
+    softSkills: c.soft_skills,
+    positiveFactors: c.positive_factors,
+    negativeFactors: c.negative_factors,
+    sourceFilename: c.source_filename,
+    favorite: c.favorite,
+    createdAt: c.created_at,
+  };
 }
 
 function mapCandidate(c: ApiCandidateOut): CandidateScreeningResult {
@@ -113,29 +142,13 @@ export function createCandidate(vacancyId: string, input: CreateCandidateInput):
 }
 
 export function fetchCandidate(id: string): Promise<CandidateDetail> {
-  return apiFetch<ApiCandidateDetail>(`/candidates/${id}`).then((c) => ({
-    id: String(c.id),
-    vacancyId: String(c.vacancy_id),
-    vacancyTitle: c.vacancy_title,
-    name: c.name,
-    stage: c.stage,
-    score: c.score,
-    lrProba: c.lr_proba,
-    rfProba: c.rf_proba,
-    catProba: c.cat_proba,
-    position: c.position,
-    lastPosition: c.last_position,
-    seniorityLabel: c.seniority_label,
-    educationLabel: c.education_label,
-    gradYear: c.grad_year,
-    totalExperience: c.total_experience,
-    techSkills: c.tech_skills,
-    softSkills: c.soft_skills,
-    positiveFactors: c.positive_factors,
-    negativeFactors: c.negative_factors,
-    sourceFilename: c.source_filename,
-    createdAt: c.created_at,
-  }));
+  return apiFetch<ApiCandidateDetail>(`/candidates/${id}`).then(mapCandidateDetail);
+}
+
+export function toggleFavorite(id: string): Promise<CandidateDetail> {
+  return apiFetch<ApiCandidateDetail>(`/candidates/${id}/favorite/toggle`, { method: "POST" }).then(
+    mapCandidateDetail,
+  );
 }
 
 export function fetchCandidates(vacancyId?: string): Promise<CandidateListItem[]> {
@@ -154,6 +167,7 @@ export function fetchCandidates(vacancyId?: string): Promise<CandidateListItem[]
       totalExperience: c.total_experience,
       techSkills: c.tech_skills,
       softSkills: c.soft_skills,
+      favorite: c.favorite,
       createdAt: c.created_at,
     })),
   );

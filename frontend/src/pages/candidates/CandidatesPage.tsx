@@ -10,7 +10,7 @@ import { usePageTitle } from "@/context/PageTitleContext";
 import { useThreshold } from "@/context/ThresholdContext";
 import { useVacancies } from "@/context/VacanciesContext";
 import { computeStatus } from "@/lib/status";
-import { fetchCandidates } from "@/lib/candidatesApi";
+import { fetchCandidates, toggleFavorite } from "@/lib/candidatesApi";
 import type { CandidateListItem } from "@/types/screening";
 
 export function CandidatesPage() {
@@ -29,6 +29,13 @@ export function CandidatesPage() {
       .then(setCandidates)
       .catch(() => setError("Не удалось загрузить кандидатов"));
   }, [vacancyId]);
+
+  const handleToggleFavorite = (id: string) => {
+    setCandidates((prev) => prev?.map((c) => (c.id === id ? { ...c, favorite: !c.favorite } : c)) ?? null);
+    toggleFavorite(id).catch(() => {
+      setCandidates((prev) => prev?.map((c) => (c.id === id ? { ...c, favorite: !c.favorite } : c)) ?? null);
+    });
+  };
 
   const withStatus = useMemo(
     () => (candidates ?? []).map((c) => ({ candidate: c, status: computeStatus(c.score, threshold) })),
@@ -84,7 +91,7 @@ export function CandidatesPage() {
         {!error &&
           candidates !== null &&
           (filtered.length > 0 ? (
-            <CandidateTable candidates={filtered} threshold={threshold} />
+            <CandidateTable candidates={filtered} threshold={threshold} onToggleFavorite={handleToggleFavorite} />
           ) : (
             <EmptyState
               icon="search"
