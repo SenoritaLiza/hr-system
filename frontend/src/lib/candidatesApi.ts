@@ -1,5 +1,11 @@
 import { apiFetch } from "@/lib/api";
-import type { BulkCandidateResult, CandidateDetail, CandidateScreeningResult, ExplanationFactor } from "@/types/screening";
+import type {
+  BulkCandidateResult,
+  CandidateDetail,
+  CandidateListItem,
+  CandidateScreeningResult,
+  ExplanationFactor,
+} from "@/types/screening";
 
 interface ApiCandidateOut {
   id: number;
@@ -43,6 +49,22 @@ interface ApiCandidateDetail {
   positive_factors: ExplanationFactor[];
   negative_factors: ExplanationFactor[];
   source_filename: string | null;
+  created_at: string;
+}
+
+interface ApiCandidateListItem {
+  id: number;
+  vacancy_id: number;
+  vacancy_title: string;
+  name: string;
+  initials: string;
+  stage: string;
+  score: number;
+  position: string;
+  last_position: string;
+  total_experience: number;
+  tech_skills: string[];
+  soft_skills: string[];
   created_at: string;
 }
 
@@ -114,6 +136,27 @@ export function fetchCandidate(id: string): Promise<CandidateDetail> {
     sourceFilename: c.source_filename,
     createdAt: c.created_at,
   }));
+}
+
+export function fetchCandidates(vacancyId?: string): Promise<CandidateListItem[]> {
+  const query = vacancyId ? `?vacancy_id=${vacancyId}` : "";
+  return apiFetch<ApiCandidateListItem[]>(`/candidates${query}`).then((list) =>
+    list.map((c) => ({
+      id: String(c.id),
+      vacancyId: String(c.vacancy_id),
+      vacancyTitle: c.vacancy_title,
+      name: c.name,
+      initials: c.initials,
+      stage: c.stage,
+      score: c.score,
+      position: c.position,
+      lastPosition: c.last_position,
+      totalExperience: c.total_experience,
+      techSkills: c.tech_skills,
+      softSkills: c.soft_skills,
+      createdAt: c.created_at,
+    })),
+  );
 }
 
 export function createCandidatesBulk(vacancyId: string, files: File[]): Promise<BulkCandidateResult[]> {

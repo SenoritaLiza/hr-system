@@ -1,23 +1,29 @@
-import { createContext, useContext, useMemo, useState, type ReactNode } from "react";
-import type { Candidate } from "@/types/candidate";
+import { createContext, useContext, useEffect, useMemo, useState, type ReactNode } from "react";
+import { fetchCandidates } from "@/lib/candidatesApi";
+import type { CandidateListItem } from "@/types/screening";
 
 interface CandidatesContextValue {
-  candidates: Candidate[];
-  toggleFavorite: (id: string) => void;
+  candidates: CandidateListItem[];
+  error: string | null;
+  reload: () => void;
 }
 
 const CandidatesContext = createContext<CandidatesContextValue | null>(null);
 
 export function CandidatesProvider({ children }: { children: ReactNode }) {
-  const [candidates, setCandidates] = useState<Candidate[]>([]);
+  const [candidates, setCandidates] = useState<CandidateListItem[]>([]);
+  const [error, setError] = useState<string | null>(null);
 
-  const toggleFavorite = (id: string) => {
-    setCandidates((prev) =>
-      prev.map((c) => (c.id === id ? { ...c, favorite: !c.favorite } : c)),
-    );
+  const reload = () => {
+    setError(null);
+    fetchCandidates()
+      .then(setCandidates)
+      .catch(() => setError("Не удалось загрузить кандидатов"));
   };
 
-  const value = useMemo(() => ({ candidates, toggleFavorite }), [candidates]);
+  useEffect(reload, []);
+
+  const value = useMemo(() => ({ candidates, error, reload }), [candidates, error]);
   return <CandidatesContext.Provider value={value}>{children}</CandidatesContext.Provider>;
 }
 

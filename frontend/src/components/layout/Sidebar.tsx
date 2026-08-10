@@ -18,7 +18,8 @@ export function Sidebar() {
   const badges: Record<string, number> = {
     vacancies: openVacancies,
     candidates: candidates.length,
-    favorites: candidates.filter((c) => c.favorite).length,
+    // Избранное пока не реализовано
+    favorites: 0,
   };
 
   const sections = role === "admin" ? ADMIN_NAV : RECRUITER_NAV;

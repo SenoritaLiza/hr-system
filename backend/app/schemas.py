@@ -73,6 +73,22 @@ class BulkCandidateResultOut(BaseModel):
     error_message: str | None = None
 
 
+class CandidateListItemOut(BaseModel):
+    id: int
+    vacancy_id: int
+    vacancy_title: str
+    name: str
+    initials: str
+    stage: str
+    score: int
+    position: str
+    last_position: str
+    total_experience: float
+    tech_skills: list[str]
+    soft_skills: list[str]
+    created_at: datetime
+
+
 class CandidateDetailOut(BaseModel):
     id: int
     vacancy_id: int

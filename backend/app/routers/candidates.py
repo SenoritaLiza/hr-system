@@ -1,11 +1,13 @@
 from fastapi import APIRouter, Depends, File, Form, HTTPException, UploadFile
+from sqlalchemy import select
 from sqlalchemy.orm import Session
 
 from app.db import get_db
 from app.ml.scoring import extract_matched_skills, score_resume
 from app.ml.text_extract import UnsupportedFileFormat, extract_text
 from app.models import Candidate, Vacancy
-from app.schemas import BulkCandidateResultOut, CandidateDetailOut, CandidateOut
+from app.schemas import BulkCandidateResultOut, CandidateDetailOut, CandidateListItemOut, CandidateOut
+from app.text_utils import initials
 from ner_module import EDU_LABELS, SENIORITY_LABELS
 from preprocessing import build_full_text
 
@@ -107,8 +109,7 @@ async def create_candidate(
     return _to_out(candidate)
 
 
-def _to_detail_out(candidate: Candidate, vacancy: Vacancy) -> CandidateDetailOut:
-    ner = candidate.ner_features
+def _matched_skills(candidate: Candidate) -> tuple[list[str], list[str]]:
     full_text = build_full_text(
         {
             "experience_text": candidate.experience_text,
@@ -116,7 +117,12 @@ def _to_detail_out(candidate: Candidate, vacancy: Vacancy) -> CandidateDetailOut
             "education": candidate.education,
         }
     )
-    tech_skills, soft_skills = extract_matched_skills(full_text)
+    return extract_matched_skills(full_text)
+
+
+def _to_detail_out(candidate: Candidate, vacancy: Vacancy) -> CandidateDetailOut:
+    ner = candidate.ner_features
+    tech_skills, soft_skills = _matched_skills(candidate)
 
     return CandidateDetailOut(
         id=candidate.id,
@@ -150,6 +156,35 @@ def get_candidate(candidate_id: int, db: Session = Depends(get_db)) -> Candidate
         raise HTTPException(status_code=404, detail="Кандидат не найден")
     vacancy = db.get(Vacancy, candidate.vacancy_id)
     return _to_detail_out(candidate, vacancy)
+
+
+def _to_list_item(candidate: Candidate, vacancy_title: str) -> CandidateListItemOut:
+    tech_skills, soft_skills = _matched_skills(candidate)
+    return CandidateListItemOut(
+        id=candidate.id,
+        vacancy_id=candidate.vacancy_id,
+        vacancy_title=vacancy_title,
+        name=candidate.name,
+        initials=initials(candidate.name),
+        stage=candidate.stage,
+        score=round(candidate.score * 100),
+        position=candidate.position,
+        last_position=candidate.last_position,
+        total_experience=candidate.total_experience,
+        tech_skills=tech_skills,
+        soft_skills=soft_skills,
+        created_at=candidate.created_at,
+    )
+
+
+@detail_router.get("", response_model=list[CandidateListItemOut])
+def list_candidates(vacancy_id: int | None = None, db: Session = Depends(get_db)) -> list[CandidateListItemOut]:
+    query = select(Candidate, Vacancy.title).join(Vacancy, Candidate.vacancy_id == Vacancy.id)
+    if vacancy_id is not None:
+        query = query.where(Candidate.vacancy_id == vacancy_id)
+    query = query.order_by(Candidate.created_at.desc())
+    rows = db.execute(query).all()
+    return [_to_list_item(candidate, title) for candidate, title in rows]
 
 
 @router.post("/bulk", response_model=list[BulkCandidateResultOut])
